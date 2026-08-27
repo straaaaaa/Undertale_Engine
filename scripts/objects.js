@@ -383,6 +383,7 @@ export class Bullet extends UndertaleObject {
     }
 
     onHitSoul(soul) {
+        if (!this.bulletEvents.hit) return;
         this.scene.events.emit(this.bulletEvents.hit,this,soul);
 
         if (this.destroyOnHit) this.destroy();
@@ -402,6 +403,10 @@ export class BulletFactory {
         switch(data.type) {
             case "bone":
                 return new Bone(scene,data.x,data.y,data.length,data.ignore,data.destroyOnHit,data.inv,data.damage,data.kr,data.events);
+            default:
+                throw new Error(
+                    `Unknown bullet type: ${data.type}`
+                );
         }
     }
 }

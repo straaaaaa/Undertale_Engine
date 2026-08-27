@@ -1,3 +1,5 @@
+import {BulletFactory} from "./objects.js";
+
 export class InputManager {
     constructor(scene) {
         this.scene = scene;
@@ -301,23 +303,29 @@ export class TurnManager {
         this.time = 0;
         this.turnRule = battleData.turnRule;
 
-        this.currentTurn = "player";
+        this.currentTurn = battleData.isFirstPlayerTurn ? "player" : "enemy";
 
         this.bulletManager = new BulletManager(this);
         this.eventManager = new EventManager(this);
     }
 
-    finishTurn() {
-        if (this.currentTurn === "player") {
-            this.currentTurn = "enemy";
-        } else {
-            this.currentTurn = "player";
-            this.turn++;
+    changeTurn() {
+        let turnData = this.battleData.turns[this.turn];
+
+        if (!turnData) {
+            turnData = this.battleData.turns[this.battleData.length - 1];
         }
+
+        this.currentTurn = turnData.type;
+        this.time = 0;
+
+        this.bulletManager.start(turnData);
+        this.eventManager.start(turnData);
     }
 
-    startTurn() {
-        this.bulletManager.start();
+    finishTurn() {
+        this.turn ++;
+        this.changeTurn();
     }
 
     update(delta) {
@@ -328,6 +336,10 @@ export class TurnManager {
 export class BulletManager {
     constructor(turnManager) {
         this.turnManager = turnManager;
+    }
+
+    start() {
+        this.
     }
 
     update0(time,delta) {
