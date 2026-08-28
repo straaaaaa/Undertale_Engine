@@ -299,7 +299,8 @@ export class TurnManager {
     constructor(scene,battleData) {
         this.scene = scene;
         this.battleData = battleData;
-        this.turn = 0;
+        this.turnIndex = 0;
+        this.dialogTurn = 0;
         this.time = 0;
         this.turnRule = battleData.turnRule;
 
@@ -310,7 +311,7 @@ export class TurnManager {
     }
 
     changeTurn() {
-        let turnData = this.battleData.turns[this.turn];
+        let turnData = this.battleData.turns[this.turnIndex];
 
         if (!turnData) {
             turnData = this.battleData.turns[this.battleData.length - 1];
@@ -324,11 +325,13 @@ export class TurnManager {
     }
 
     finishTurn() {
-        this.turn ++;
+        this.turnIndex ++;
         this.changeTurn();
     }
 
     update(delta) {
+        this.bulletManager.update(this.time);
+        this.eventManager.update(this.time);
         this.time += delta;
     }
 }
@@ -338,12 +341,31 @@ export class BulletManager {
         this.turnManager = turnManager;
     }
 
-    start() {
-        this.
+    start(turnData) {
+        this.turnData = turnData;
+        this.bulletIndex = 0;
     }
 
-    update0(time,delta) {
-        
+    getByTag(tag) {
+        const bullets = this.scene.bullets;
+        const len = bullets.length;
+        const result = [];
+        for (let i = 0;i < len;i++) {
+            if (bullets[i].tag.includes(tag)) result.push(bullets[i]);
+        }
+        return result;
+    }
+
+    update(elapsed) {
+        const scene = this.turnManager.scene;
+        const bullets = this.turnData.bullets;
+        while (
+            this.bulletIndex < bullets.length &&
+            elapsed >= bullets[this.bulletIndex].time
+        ) {
+            BulletFactory.create(scene,bullets[this.bulletIndex])
+            this.bulletIndex++;
+        }
     }
 }
 
@@ -352,7 +374,47 @@ export class EventManager {
         this.turnManager = turnManager;
     }
 
-    update0(time,delta) {
-        
+    start(turnData) {
+        this.turnData = turnData;
+        this.eventIndex = 0;
+    }
+
+    update(elapsed) {
+        const scene = this.turnManager.scene;
+        const events = this.turnData.events;
+        while (
+            this.eventIndex < events.length &&
+            elapsed >= events[this.eventIndex].time
+        ) {
+            const event = events[this.eventIndex];
+            this.execute(event);
+            this.eventIndex++;
+        }
+    }
+
+    serchTargetBullets(event) {
+        const result = new Set();
+        for (const tag of event.targets) {
+            for (const bullet of this.turnManager.bulletManager.getByTag(tag)) {
+                result.add(bullet)
+            }
+        }
+        return result;
+    }
+
+    execute(event) {
+        switch (event.type) {
+            case "destroy":
+                const bullets = this.serchTargetBullets(event);
+                for (const bullet of bullets) {
+                    bullet.destroy();
+                }
+                break;
+
+            default:
+                throw new Error(
+                    `Unknown event type: ${event.type}`
+                );
+        }
     }
 }

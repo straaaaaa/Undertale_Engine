@@ -333,7 +333,7 @@ export class RedSoul extends Soul {
 }
 
 export class Bullet extends UndertaleObject {
-    constructor(scene,x,y,baseWidth,baseHeight,scaleX,scaleY,texture,destroyOnHit,destroyOutsideBoard,ignore,inv,damage,kr=0,Depth=DEPTH.BATTLE.BULLET.INSIDE,events={hit: "bullet_hit"}) {
+    constructor(scene,x,y,baseWidth,baseHeight,scaleX,scaleY,texture,destroyOnHit,destroyOutsideBoard,ignore,inv,damage,kr=0,Depth=DEPTH.BATTLE.BULLET.INSIDE,events={hit: "bullet_hit"},tag=[]) {
         super(scene,x,y,texture,Depth);
 
         scene.bullets.push(this);
@@ -402,7 +402,7 @@ export class BulletFactory {
     static create(scene,data) {
         switch(data.type) {
             case "bone":
-                return new Bone(scene,data.x,data.y,data.length,data.ignore,data.destroyOnHit,data.inv,data.damage,data.kr,data.events);
+                return new Bone(scene,data.x,data.y,data.length,data.ignore,data.destroyOnHit,data.inv,data.damage,data.kr,data.events,data.tag);
             default:
                 throw new Error(
                     `Unknown bullet type: ${data.type}`
@@ -412,7 +412,7 @@ export class BulletFactory {
 }
 
 export class Bone extends Bullet {
-    constructor(scene,x=320,y=320,length=10,ignore=true,destroyOnHit=false,inv=1000,damage=1,kr=1,events={hit: "bullet_hit"}){
+    constructor(scene,x=320,y=320,length=10,ignore=true,destroyOnHit=false,inv=1000,damage=1,kr=1,events={hit: "bullet_hit"},tag=[]){
         super(
             scene,
             x,
@@ -429,7 +429,8 @@ export class Bone extends Bullet {
             damage,
             kr,
             DEPTH.BATTLE.BULLET.INSIDE,
-            events
+            events,
+            tag
         );
 
         this.setAlpha(0);
