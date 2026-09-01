@@ -313,6 +313,8 @@ export class TurnManager {
     }
 
     changeTurn() {
+        alert(this.battleData);
+        alert(this.battleData.turns);
         let turnData = this.battleData.turns[this.turnIndex];
 
         if (!turnData) {
