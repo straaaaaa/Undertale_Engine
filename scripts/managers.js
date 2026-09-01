@@ -358,6 +358,8 @@ export class BulletManager {
 
     update(elapsed) {
         const scene = this.turnManager.scene;
+        alert(this.turnData)
+        alert(this.turnData.bullets);
         const bullets = this.turnData.bullets;
         while (
             this.bulletIndex < bullets.length &&
