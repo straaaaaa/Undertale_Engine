@@ -308,14 +308,12 @@ export class TurnManager {
 
         this.bulletManager = new BulletManager(this);
         this.eventManager = new EventManager(this);
+
+        this.changeTurn();
     }
 
     changeTurn() {
         let turnData = this.battleData.turns[this.turnIndex];
-
-        alert(this.battleData)
-        alert(this.battleData.turns);
-        alert(turnData);
 
         if (!turnData) {
             turnData = this.battleData.turns[this.battleData.length - 1];
@@ -361,9 +359,8 @@ export class BulletManager {
     }
 
     update(elapsed) {
+        if (!this.turnData) return;
         const scene = this.turnManager.scene;
-        alert(this.turnData)
-        alert(this.turnData.bullets);
         const bullets = this.turnData.bullets;
         while (
             this.bulletIndex < bullets.length &&
@@ -386,6 +383,7 @@ export class EventManager {
     }
 
     update(elapsed) {
+        if (!this.turnData) return;
         const scene = this.turnManager.scene;
         const events = this.turnData.events;
         while (
