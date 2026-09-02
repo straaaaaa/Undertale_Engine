@@ -349,7 +349,7 @@ export class BulletManager {
     }
 
     getByTag(tag) {
-        const bullets = this.turnmanager.scene.bullets;
+        const bullets = this.turnManager.scene.bullets;
         const len = bullets.length;
         const result = [];
         for (let i = 0;i < len;i++) {
