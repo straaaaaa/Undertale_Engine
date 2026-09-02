@@ -462,7 +462,6 @@ export class Bone extends Bullet {
     }
 
     update0(time,delta) {
-        this.changeLength(this.length+0.2);
         if (this.visual) {
             this.visual.setPosition(this.x,this.y);
             this.visual.setAngle(this.angle);
