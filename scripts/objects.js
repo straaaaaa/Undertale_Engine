@@ -349,6 +349,7 @@ export class Bullet extends UndertaleObject {
         this.destroyOutsideBoard = destroyOutsideBoard;
 
         this.bulletEvents = events;
+        this.tag = tag;
 
 
         if (Depth === DEPTH.BATTLE.BULLET.INSIDE) {
