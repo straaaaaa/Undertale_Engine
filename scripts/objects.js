@@ -333,7 +333,7 @@ export class RedSoul extends Soul {
 }
 
 export class Bullet extends UndertaleObject {
-    constructor(scene,x,y,baseWidth,baseHeight,scaleX,scaleY,texture,destroyOnHit,destroyOutsideBoard,ignore,inv,damage,kr=0,Depth=DEPTH.BATTLE.BULLET.INSIDE,events={hit: "bullet_hit"},tag=[]) {
+    constructor(scene,x,y,baseWidth,baseHeight,scaleX,scaleY,texture,destroyOnHit,destroyOutsideBoard,ignore,inv,damage,kr=0,Depth=DEPTH.BATTLE.BULLET.INSIDE,events={hit: "bullet_hit"},tag=[],lifeTime=-1) {
         super(scene,x,y,texture,Depth);
 
         scene.bullets.push(this);
@@ -350,7 +350,8 @@ export class Bullet extends UndertaleObject {
 
         this.bulletEvents = events;
         this.tag = tag;
-
+        this.lifeTime = lifeTime;
+        this.timer = 0;
 
         if (Depth === DEPTH.BATTLE.BULLET.INSIDE) {
             this.setMask(scene.board.innerMask);
@@ -391,6 +392,8 @@ export class Bullet extends UndertaleObject {
     }
 
     update1(time,delta) {
+        this.timer += delta;
+        if (this.timer >= this.lifeTime && this.lifeTime !== -1) this.destroy();
         const soul = this.scene.soul;
 
         if (this.scene.matter.overlap(this.body,soul.body)) {
@@ -403,7 +406,7 @@ export class BulletFactory {
     static create(scene,data) {
         switch(data.type) {
             case "bone":
-                return new Bone(scene,data.x,data.y,data.length,data.ignore,data.destroyOnHit,data.inv,data.damage,data.kr,data.events,data.tag);
+                return new Bone(scene,data.x,data.y,data.length,data.ignore,data.destroyOnHit,data.inv,data.damage,data.kr,data.events,data.tag,data.lifeTime);
             default:
                 throw new Error(
                     `Unknown bullet type: ${data.type}`
@@ -413,7 +416,7 @@ export class BulletFactory {
 }
 
 export class Bone extends Bullet {
-    constructor(scene,x=320,y=320,length=10,ignore=true,destroyOnHit=false,inv=1000,damage=1,kr=1,events={hit: "bullet_hit"},tag=[]){
+    constructor(scene,x=320,y=320,length=10,ignore=true,destroyOnHit=false,inv=1000,damage=1,kr=1,events={hit: "bullet_hit"},tag=[],lifeTime=-1){
         super(
             scene,
             x,
@@ -431,7 +434,8 @@ export class Bone extends Bullet {
             kr,
             DEPTH.BATTLE.BULLET.INSIDE,
             events,
-            tag
+            tag,
+            lifeTime
         );
 
         this.setAlpha(0);

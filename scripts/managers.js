@@ -390,7 +390,7 @@ export class EventManager {
         }
     }
 
-    serchTargetBullets(event) {
+    searchTargetBullets(event) {
         const result = new Set();
         for (const tag of event.targets) {
             for (const bullet of this.turnManager.bulletManager.getByTag(tag)) {
@@ -403,7 +403,7 @@ export class EventManager {
     execute(event) {
         switch (event.type) {
             case "destroy":
-                const bullets = this.serchTargetBullets(event);
+                const bullets = this.searchTargetBullets(event);
                 for (const bullet of bullets) {
                     bullet.destroy();
                 }
