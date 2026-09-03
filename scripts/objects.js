@@ -393,7 +393,10 @@ export class Bullet extends UndertaleObject {
 
     update1(time,delta) {
         this.timer += delta;
-        if (this.timer >= this.lifeTime && this.lifeTime !== -1) this.destroy();
+        if (this.timer >= this.lifeTime && this.lifeTime !== -1) {
+            this.destroy();
+            return;
+        }
         const soul = this.scene.soul;
 
         if (this.scene.matter.overlap(this.body,soul.body)) {
