@@ -306,6 +306,11 @@ export class TurnManager {
 
         this.currentTurn = battleData.isFirstPlayerTurn ? "player" : "enemy";
 
+        for (const turn of this.battleData.turns) {
+            turn.bullets.sort((a, b) => a.time - b.time);
+            turn.events.sort((a, b) => a.time - b.time);
+        }
+
         this.bulletManager = new BulletManager(this);
         this.eventManager = new EventManager(this);
 
